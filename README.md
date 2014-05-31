@@ -1,6 +1,6 @@
 # cuora
 
-A Turtle graphics library
+Yet Another [turtle graphics](http://en.wikipedia.org/wiki/Turtle_graphics) library
 
 ![inspi](https://raw.githubusercontent.com/youpy/cuora/master/example/inspi.png)
 
