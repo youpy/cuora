@@ -14,9 +14,11 @@ function inspi(side, angle, inc, step) {
     return;
   }
 
-  robot.forward(side);
-  robot.right(angle);
-  inspi(side, angle + inc, inc, step + 1);
+  setTimeout(function() {
+    robot.forward(side);
+    robot.right(angle);
+    inspi(side, angle + inc, inc, step + 1);
+  }, 0);
 }
 
 inspi(20, 0, 7);
