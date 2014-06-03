@@ -9,16 +9,16 @@ var Lsystem = function(robot, renderer) {
   this.robot = robot;
   this.renderer = renderer;
 
-  this.start = 'X';
+  this.start = 'F';
   this.x = renderer.canvas.width / 2;
   this.y = renderer.canvas.height / 2;
   this.initialAngle = 90;
-  this.angle = 90;
-  this.iterations = 14;
-  this.side = 5;
+  this.angle = 15;
+  this.iterations = 4;
+  this.side = 10;
   this.ruleX = '';
   this.ruleY = '';
-  this.ruleF = 'F';
+  this.ruleF = 'F[+F-F-F]F[--F+F+F]';
 
   this.savedX = [];
   this.savedY = [];
@@ -31,6 +31,39 @@ Lsystem.prototype.initWorker = function() {
   this.worker = new Worker('task.js');
 };
 
+Lsystem.prototype.updateHash = function() {
+  location.hash = encodeURIComponent([
+    this.start,
+    this.x,
+    this.y,
+    this.initialAngle,
+    this.angle,
+    this.side,
+    this.iterations,
+    this.ruleX,
+    this.ruleY,
+    this.ruleF
+  ].join(','));
+};
+
+Lsystem.prototype.setFromHash = function() {
+  var values = decodeURIComponent(location.hash).slice(1).split(','),
+      that = this;
+
+  if(values.length === 10) {
+    this.start = values[0];
+    this.x = parseFloat(values[1]);
+    this.y = parseFloat(values[2]);
+    this.initialAngle = parseFloat(values[3]);
+    this.angle = parseFloat(values[4]);
+    this.side = parseFloat(values[5]);
+    this.iterations = parseInt(values[6]);
+    this.ruleX = values[7];
+    this.ruleY = values[8];
+    this.ruleF = values[9];
+  }
+};
+
 Lsystem.prototype.run = function() {
   var that = this,
       start = this.start,
@@ -38,12 +71,12 @@ Lsystem.prototype.run = function() {
       angle = this.angle,
       robot = this.robot,
       renderer = this.renderer;
-  
-
+  console.log('run');
   renderer.clear();
   robot.angle = this.initialAngle;
   renderer.x = this.x;
   renderer.y = this.y;
+  renderer.ctx.strokeStyle = '#ffffff';
 
   this.worker.terminate();
   this.initWorker();
@@ -96,32 +129,51 @@ Lsystem.prototype.run = function() {
     ruleY: that.ruleY,
     ruleF: that.ruleF
   });
+
+  this.updateHash();
 };
 
 var ls = new Lsystem(robot, renderer);
 
-ls.ruleX = 'X+YF';
-ls.ruleY = 'FX-Y';
-
 window.onload = function() {
-  var gui = new dat.GUI(),
+  var gui = new dat.GUI({ load: presets, preset: "Default" }),
       listener = function() {
         ls.run();
       };
 
+  gui.remember(ls);
+
   gui.add(ls, 'start')
-    .onFinishChange(listener);
+    .listen();
+  gui.add(ls, 'x')
+    .listen();
+  gui.add(ls, 'y')
+    .listen();
   gui.add(ls, 'initialAngle', 0, 360)
+    .listen()
     .onChange(listener);
   gui.add(ls, 'angle', 0, 360)
+    .listen()
     .onChange(listener);
   gui.add(ls, 'side', 1, 20)
+    .listen()
     .onChange(listener);
   gui.add(ls, 'iterations');
-  gui.add(ls, 'ruleX');
-  gui.add(ls, 'ruleY');
-  gui.add(ls, 'ruleF');
+  gui.add(ls, 'ruleX')
+    .listen();
+  gui.add(ls, 'ruleY')
+    .listen();
+  gui.add(ls, 'ruleF')
+    .listen();
   gui.add(ls, 'run');
+
+  // XXX
+  document.getElementsByTagName('select')[0].onchange = function() {
+    ls.run();
+  };
+
+  ls.setFromHash();
+  ls.run();
 };
 
 window.onresize = function() {
@@ -134,5 +186,3 @@ renderer.canvas.onclick = function(e) {
 
   ls.run();
 };
-
-ls.run();
