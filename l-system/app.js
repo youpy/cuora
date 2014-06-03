@@ -71,7 +71,7 @@ Lsystem.prototype.run = function() {
       angle = this.angle,
       robot = this.robot,
       renderer = this.renderer;
-  console.log('run');
+
   renderer.clear();
   robot.angle = this.initialAngle;
   renderer.x = this.x;
@@ -129,8 +129,6 @@ Lsystem.prototype.run = function() {
     ruleY: that.ruleY,
     ruleF: that.ruleF
   });
-
-  this.updateHash();
 };
 
 var ls = new Lsystem(robot, renderer);
@@ -140,6 +138,12 @@ window.onload = function() {
       listener = function() {
         ls.run();
       };
+
+  gui.updateAll = function() {
+    for (var i in this.__controllers) {
+      this.__controllers[i].updateDisplay();
+    }
+  };
 
   gui.remember(ls);
 
@@ -158,35 +162,32 @@ window.onload = function() {
   gui.add(ls, 'ruleF');
   gui.add(ls, 'run');
 
-  var updateGui = function() {
-    for (var i in gui.__controllers) {
-      gui.__controllers[i].updateDisplay();
-    }
-  };
-
-  var run = function() {
-    updateGui();
-    ls.run();
+  var update = function() {
+    gui.updateAll();
+    ls.updateHash();
   };
 
   // XXX
   document.getElementsByTagName('select')[0].onchange = function() {
-    run();
+    update();
   };
 
   ls.setFromHash();
-  run();
+  update();
+  ls.run();
 
   renderer.canvas.onclick = function(e) {
     ls.x = e.x;
     ls.y = e.y;
 
-    run();
+    update();
+  };
+
+  window.onhashchange = function() {
+    ls.run();
+  };
+
+  window.onresize = function() {
+    renderer.setSize(window.innerWidth, window.innerHeight);
   };
 };
-
-window.onresize = function() {
-  renderer.setSize(window.innerWidth, window.innerHeight);
-};
-
-
