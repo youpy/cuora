@@ -1,7 +1,7 @@
 'use strict';
 
 var presets = {
-  "preset": "Dragon curve",
+  "preset": "honeycomb",
   "closed": false,
   "remembered": {
     "Default": {
@@ -44,6 +44,20 @@ var presets = {
         "ruleX": "X+YF",
         "ruleY": "FX-Y",
         "ruleF": "F"
+      }
+    },
+    "Honeycomb": {
+      "0": {
+        "start": "F",
+        "x": 662,
+        "y": 549,
+        "initialAngle": 90,
+        "angle": 60,
+        "side": 10,
+        "iterations": 5,
+        "ruleX": "",
+        "ruleY": "",
+        "ruleF": "F[+FF-F]F[--F+F+F]"
       }
     }
   },
