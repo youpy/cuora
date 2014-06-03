@@ -184,6 +184,7 @@ window.onload = function() {
 
   window.onhashchange = function() {
     ls.setFromHash();
+    update();
     ls.run();
   };
 
