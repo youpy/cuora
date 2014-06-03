@@ -158,7 +158,7 @@ window.onload = function() {
     .onFinishChange(listener);
   gui.add(ls, 'angle', 0, 360)
     .onFinishChange(listener);
-  gui.add(ls, 'side', 1, 20)
+  gui.add(ls, 'side', 1, 50)
     .onFinishChange(listener);
   gui.add(ls, 'iterations');
   gui.add(ls, 'ruleX');
