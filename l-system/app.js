@@ -143,46 +143,50 @@ window.onload = function() {
 
   gui.remember(ls);
 
-  gui.add(ls, 'start')
-    .listen();
-  gui.add(ls, 'x')
-    .listen();
-  gui.add(ls, 'y')
-    .listen();
+  gui.add(ls, 'start');
+  gui.add(ls, 'x');
+  gui.add(ls, 'y');
   gui.add(ls, 'initialAngle', 0, 360)
-    .listen()
-    .onChange(listener);
+    .onFinishChange(listener);
   gui.add(ls, 'angle', 0, 360)
-    .listen()
-    .onChange(listener);
+    .onFinishChange(listener);
   gui.add(ls, 'side', 1, 20)
-    .listen()
-    .onChange(listener);
+    .onFinishChange(listener);
   gui.add(ls, 'iterations');
-  gui.add(ls, 'ruleX')
-    .listen();
-  gui.add(ls, 'ruleY')
-    .listen();
-  gui.add(ls, 'ruleF')
-    .listen();
+  gui.add(ls, 'ruleX');
+  gui.add(ls, 'ruleY');
+  gui.add(ls, 'ruleF');
   gui.add(ls, 'run');
 
-  // XXX
-  document.getElementsByTagName('select')[0].onchange = function() {
+  var updateGui = function() {
+    for (var i in gui.__controllers) {
+      gui.__controllers[i].updateDisplay();
+    }
+  };
+
+  var run = function() {
+    updateGui();
     ls.run();
   };
 
+  // XXX
+  document.getElementsByTagName('select')[0].onchange = function() {
+    run();
+  };
+
   ls.setFromHash();
-  ls.run();
+  run();
+
+  renderer.canvas.onclick = function(e) {
+    ls.x = e.x;
+    ls.y = e.y;
+
+    run();
+  };
 };
 
 window.onresize = function() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 };
 
-renderer.canvas.onclick = function(e) {
-  ls.x = e.x;
-  ls.y = e.y;
 
-  ls.run();
-};
