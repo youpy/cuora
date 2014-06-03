@@ -136,7 +136,11 @@ var ls = new Lsystem(robot, renderer);
 window.onload = function() {
   var gui = new dat.GUI({ load: presets, preset: "Default" }),
       listener = function() {
-        ls.run();
+        update();
+      },
+      update = function() {
+        gui.updateAll();
+        ls.updateHash();
       };
 
   gui.updateAll = function() {
@@ -162,11 +166,6 @@ window.onload = function() {
   gui.add(ls, 'ruleF');
   gui.add(ls, 'run');
 
-  var update = function() {
-    gui.updateAll();
-    ls.updateHash();
-  };
-
   // XXX
   document.getElementsByTagName('select')[0].onchange = function() {
     update();
@@ -184,6 +183,7 @@ window.onload = function() {
   };
 
   window.onhashchange = function() {
+    ls.setFromHash();
     ls.run();
   };
 
